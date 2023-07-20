@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "cli-pr"
+version = "0.1.0"
+description = ""
+authors = ["quillahava <voyt.to.work@ya.ru>"]
+readme = "README.md"
+packages = [{include = "cli_pr"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+argparse = "^1.4.0"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
