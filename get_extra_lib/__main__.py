@@ -4,7 +4,7 @@ import re
 from packaging import version
 
 
-def get_json_from_api(branch, arch=None, filename: str = "first_branch.json"):
+def get_json_from_api(branch, arch=None, filename: str | None = None):
     url = f"https://rdb.altlinux.org/api/export/branch_binary_packages/{branch}"
     params = {}
     if arch is not None:
@@ -15,8 +15,9 @@ def get_json_from_api(branch, arch=None, filename: str = "first_branch.json"):
         response.raise_for_status()
         json_response = response.json()
         # save response to file
-        with open(filename, "w") as file:
-            json.dump(json_response, file, indent=4)
+        if filename:
+            with open(filename, "w") as file:
+                json.dump(json_response, file, indent=4)
 
         return json_response
     except requests.exceptions.RequestException as e:
@@ -38,18 +39,6 @@ def get_package_diff(response1, response2):
     packages_second_response = [package["name"] for package in response2["packages"]]
     packages_diff = list(set(packages_first_response) - set(packages_second_response))
     return packages_diff
-
-
-# def remove_letters_from_version(version):
-#     # Используем регулярное выражение для удаления букв и знаков из начала и конца строки
-#     version = re.sub(r"^[a-zA-Z.]+", "", version)
-#     version = re.sub(r"[a-zA-Z.]+$", "", version)
-#     # Заменяем рядом стоящие точки или другие знаки на одну точку
-#     version = re.sub(r"\.\.+", ".", version)
-#     # Заменяем все буквы на пустую строку, оставляя только цифры и точки
-#     result = "".join(char for char in version if char.isdigit() or char == ".")
-#
-#     return result
 
 
 def remove_letters_from_version(version):
