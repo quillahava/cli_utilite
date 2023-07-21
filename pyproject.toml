@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "cli-pr"
+name = "cli_pr"
 version = "0.1.0"
 description = ""
 authors = ["quillahava <voyt.to.work@ya.ru>"]
 readme = "README.md"
-packages = [{include = "cli_pr"}]
+packages = [{include = "get_extra_lib"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
