@@ -82,33 +82,61 @@ def compare_version(response1, response2):
     return packages_diff
 
 
+def generate_comparison_json(branch1, branch2, arch=None):
+    response1 = get_json_from_api(branch1, arch)
+    response2 = get_json_from_api(branch2, arch)
+
+    if not response1 or not response2:
+        return None
+
+    packages_in_branch1_not_in_branch2 = get_package_diff(response1, response2)
+    packages_in_branch2_not_in_branch1 = get_package_diff(response2, response1)
+    version_diff = compare_version(response1, response2)
+
+    comparison_json = {
+        "packages_in_branch1_not_in_branch2": list(packages_in_branch1_not_in_branch2),
+        "packages_in_branch2_not_in_branch1": list(packages_in_branch2_not_in_branch1),
+        "packages_with_higher_version_in_branch1": {
+            package: str(version_diff[package]) for package in version_diff
+        },
+    }
+
+    return comparison_json
+
+
 if __name__ == "__main__":
     branch_name = "p10"
     second_branch_name = "p9"
     arch_name = "x86_64"
     second_arch_name = "aarch64"
-    first_response = read_json_from_file("first_branch.json")
-    second_response = read_json_from_file("second_branch.json")
-    if first_response == None or second_response == None:
-        try:
-            first_response = get_json_from_api(
-                branch=branch_name, arch=arch_name, filename="first_branch.json"
-            )
-            second_response = get_json_from_api(
-                branch=second_branch_name,
-                arch=second_arch_name,
-                filename="second_branch.json",
-            )
-        except Exception as e:
-            print(e)
-    if first_response and second_response:
-        # packages_diff = get_package_diff(first_response, second_response)
-        # # output all diff packages
-        # packages_diff_2 = get_package_diff(second_response, first_response)
-        packages_diff = compare_version(first_response, second_response)
-        # for index, name in enumerate(packages_diff, start=1):
-        #     print(f"{index}: {name}")
-        for index, (package_name, version_release) in enumerate(
-            packages_diff.items(), start=1
-        ):
-            print(f"{index}. {package_name}: {version_release}")
+    # first_response = read_json_from_file("first_branch.json")
+    # second_response = read_json_from_file("second_branch.json")
+    # if first_response == None or second_response == None:
+    #     try:
+    #         first_response = get_json_from_api(
+    #             branch=branch_name, arch=arch_name, filename="first_branch.json"
+    #         )
+    #         second_response = get_json_from_api(
+    #             branch=second_branch_name,
+    #             arch=second_arch_name,
+    #             filename="second_branch.json",
+    #         )
+    #     except Exception as e:
+    #         print(e)
+    # if first_response and second_response:
+    # packages_diff = get_package_diff(first_response, second_response)
+    # # output all diff packages
+    # packages_diff_2 = get_package_diff(second_response, first_response)
+    # packages_diff = compare_version(first_response, second_response)
+    # for index, name in enumerate(packages_diff, start=1):
+    #     print(f"{index}: {name}")
+    # for index, (package_name, version_release) in enumerate(
+    #     packages_diff.items(), start=1
+    # ):
+    #     print(f"{index}. {package_name}: {version_release}")
+    with open("response.json", "w") as file:
+        json.dump(
+            generate_comparison_json(branch_name, second_branch_name, arch=arch_name),
+            file,
+            indent=4,
+        )
