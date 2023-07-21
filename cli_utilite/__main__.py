@@ -1,40 +1,37 @@
 #!/usr/bin/env python
 
 import argparse
-from get_extra_lib import get_json_from_api, get_package_diff, compare_version
+import json
+from get_extra_lib import (
+    get_json_from_api,
+    get_package_diff,
+    compare_version,
+    generate_comparison_json,
+)
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="CLI утилита для сравнения списков бинарных пакетов"
+        description="CLI utility for comparing lists of binary packages"
     )
-    parser.add_argument("branch1", help="Имя первой ветки")
-    parser.add_argument("branch2", help="Имя второй ветки")
-    parser.add_argument("--arch", help="Архитектура пакетов", default="x86_64")
+    parser.add_argument("branch1", help="Name of first branch")
+    parser.add_argument("branch2", help="Name of second branch")
+    parser.add_argument("--arch", help="Arch of packages", default=None)
     args = parser.parse_args()
 
-    branch1 = args.branch1
-    branch2 = args.branch2
-    arch = args.arch
-
     try:
-        first_response = get_json_from_api(branch1, arch)
-        second_response = get_json_from_api(branch2, arch)
-        if first_response and second_response:
-            compare_versions = compare_version(first_response, second_response)
-            print("Пакеты, которые есть в 1-й, но нет во 2-й:")
-            for package_name in get_package_diff(first_response, second_response):
-                print(package_name)
-            print("\nПакеты, которые есть во 2-й, но нет в 1-й:")
-            for package_name in get_package_diff(second_response, first_response):
-                print(package_name)
-            print("\nПакеты, version которых больше в 1-й, чем во 2-й:")
-            for package_name, version_release in compare_versions.items():
-                print(f"{package_name}: {version_release}")
+        comparison_json = generate_comparison_json(
+            args.branch1, args.branch2, args.arch
+        )
+
+        if comparison_json:
+            # Writing the JSON response to the response.json file
+            with open("response.json", "w") as file:
+                json.dump(comparison_json, file, indent=4)
         else:
-            print("Не удалось получить данные для сравнения.")
+            print("Couldn't get data for comparison.")
     except Exception as e:
-        print(f"Произошла ошибка: {e}")
+        print(f"Error {e}")
 
 
 if __name__ == "__main__":
