@@ -67,6 +67,35 @@ cli_utilite -h
 
 If the installation was successful, you will see the utility's help information.
 
+## Step 6: Usage
+
+Run the `cli_utilite` with the desired branch names:
+
+```bash
+cli_utilite sisyphus p10
+```
+
+This command will compare the lists of binary packages between the `sisyphus` and `p10` branches, and it will generate the `response.json` file in the current directory.
+
+## Sample Output
+
+After running the command, the `response.json` file will be created with the following structure:
+
+```json
+{
+  "packages_in_branch1": ["package1", "package2", "package4"],
+  "packages_in_branch2": ["package3", "package5", "package6"],
+  "packages_with_higher_version_in_branch1": {
+    "package1": "1.2.0",
+    "package2": "2.0.1"
+  }
+}
+```
+
+- `packages_in_branch1`: Lists the packages present in the first branch (`sisyphus`).
+- `packages_in_branch2`: Lists the packages present in the second branch (`p10`).
+- `packages_with_higher_version_in_branch1`: Contains packages that have higher version-release in the first branch (`sisyphus`) compared to the second branch (`p10`).
+
 ## Uninstalling `cli_utilite`
 
 If, for any reason, you want to uninstall `cli_utilite` from the virtual environment, you can use the following `make` command:
@@ -84,3 +113,4 @@ pip uninstall cli_utilite
 That's it! You have successfully installed and verified `cli_utilite`. You can now use the utility to perform the desired tasks. If you encounter any issues during the installation or usage, feel free to reach out for support.
 
 Happy using `cli_utilite`! 🚀
+Sure! Below is an example of how to use the `cli_utilite` to compare lists of binary packages from two branches and generate the `response.json` file.
