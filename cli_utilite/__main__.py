@@ -12,7 +12,7 @@ from get_extra_lib import (
 
 def main():
     parser = argparse.ArgumentParser(
-        description="CLI utility for comparing lists of binary packages"
+        description="CLI utility for comparing lists of binary packages. This utility allows you to compare two branches of binary packages from an Alt Linux repository. It retrieves package lists from the specified branches, performs a comparison, and generates a JSON report containing three sections:\n\n1. 'packages_in_branch1': A list of package names that exist in the first branch but not in the second branch.\n\n2. 'packages_in_branch2': A list of package names that exist in the second branch but not in the first branch.\n\n3. 'packages_with_higher_version_in_branch1': A dictionary of package names and their respective versions from the first branch that have higher versions than those in the second branch.\n\nThe generated 'response.json' file will be placed in the current working directory. The comparison is based on the package names and their version numbers (after removing letters and special characters) to ensure accurate results. Note that this utility requires an active internet connection to access the Alt Linux repository API."
     )
     parser.add_argument("branch1", help="Name of first branch")
     parser.add_argument("branch2", help="Name of second branch")
