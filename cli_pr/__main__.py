@@ -31,6 +31,13 @@ def read_json_from_file(filename: str):
         return None
 
 
+def get_package_diff(response1, response2):
+    packages_first_response = [package["name"] for package in response1["packages"]]
+    packages_second_response = [package["name"] for package in response2["packages"]]
+    packages_diff = list(set(packages_first_response) - set(packages_second_response))
+    return packages_diff
+
+
 if __name__ == "__main__":
     branch_name = "p10"
     second_branch_name = "sisyphus"
@@ -51,15 +58,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(e)
     if first_response and second_response:
-        packages_first_response = [
-            package["name"] for package in first_response["packages"]
-        ]
-        packages_second_response = [
-            package["name"] for package in second_response["packages"]
-        ]
-        packages_diff = list(
-            set(packages_first_response) - set(packages_second_response)
-        )
+        packages_diff = get_package_diff(first_response, second_response)
         # output all diff packages
         for index, name in enumerate(packages_diff, start=1):
             print(f"{index}: {name}")
