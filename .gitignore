@@ -1,1 +1,3 @@
 cli_pr/*.json
+__pycache__/
+cli_pr/__pycache__/
