@@ -36,10 +36,10 @@ if __name__ == "__main__":
     second_branch_name = "sisyphus"
     arch_name = "x86_64"
     second_arch_name = "aarch64"
-    try:
-        first_response = read_json_from_file("first_branch.json")
-        second_response = read_json_from_file("second_branch.json")
-        if first_response == None or second_response == None:
+    first_response = read_json_from_file("first_branch.json")
+    second_response = read_json_from_file("second_branch.json")
+    if first_response == None or second_response == None:
+        try:
             first_response = get_json_from_api(
                 branch=branch_name, arch=arch_name, filename="first_branch.json"
             )
@@ -48,8 +48,8 @@ if __name__ == "__main__":
                 arch=second_arch_name,
                 filename="second_branch.json",
             )
-    except Exception as e:
-        print(e)
+        except Exception as e:
+            print(e)
     if first_response and second_response:
         packages_first_response = [
             package["name"] for package in first_response["packages"]
@@ -60,4 +60,6 @@ if __name__ == "__main__":
         packages_diff = list(
             set(packages_first_response) - set(packages_second_response)
         )
-        print(packages_diff)
+        # output all diff packages
+        for index, name in enumerate(packages_diff, start=1):
+            print(f"{index}: {name}")
