@@ -40,10 +40,26 @@ def get_package_diff(response1, response2):
     return packages_diff
 
 
+# def remove_letters_from_version(version):
+#     # Используем регулярное выражение для удаления букв и знаков из начала и конца строки
+#     version = re.sub(r"^[a-zA-Z.]+", "", version)
+#     version = re.sub(r"[a-zA-Z.]+$", "", version)
+#     # Заменяем рядом стоящие точки или другие знаки на одну точку
+#     version = re.sub(r"\.\.+", ".", version)
+#     # Заменяем все буквы на пустую строку, оставляя только цифры и точки
+#     result = "".join(char for char in version if char.isdigit() or char == ".")
+#
+#     return result
+
+
 def remove_letters_from_version(version):
-    # Используем регулярное выражение для удаления букв и точек из начала и конца строки
+    # Используем регулярное выражение для удаления букв и знаков из начала и конца строки
     version = re.sub(r"^[a-zA-Z.]+", "", version)
     version = re.sub(r"[a-zA-Z.]+$", "", version)
+    # Используем регулярное выражение для удаления некорректных символов между числами
+    version = re.sub(r"[^\d.]+", "", version)
+    # Заменяем рядом стоящие точки на одну точку
+    version = re.sub(r"\.\.+", ".", version)
     # Заменяем все буквы на пустую строку, оставляя только цифры и точки
     result = "".join(char for char in version if char.isdigit() or char == ".")
 
