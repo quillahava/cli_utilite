@@ -14,4 +14,4 @@ clear:
 
 # Uninstall the utility (remove it from the system)
 uninstall:
-	pip uninstall cli_utilite
+	pip uninstall altbrains

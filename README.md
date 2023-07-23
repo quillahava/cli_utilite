@@ -1,5 +1,6 @@
-# Get info about binary packages from an Alt Linux repository
+# Altbrains
 
+Altbrains stands for "Alt Linux Branches Inspector," a command-line utility and shared library that allows you to compare lists of binary packages from different branches of the Alt Linux distribution repository.
 CLI utility for comparing lists of binary packages. This utility allows you to compare two branches of binary packages from an Alt Linux repository. It retrieves package lists from the specified branches, performs a comparison, and generates a JSON report containing three sections:
 
 1. 'packages_in_branch1': A list of package names that exist in the first branch but not in the second branch.
@@ -8,19 +9,19 @@ CLI utility for comparing lists of binary packages. This utility allows you to c
 
 The generated 'response.json' file will be placed in the current working directory. The comparison is based on the package names and their version numbers (after removing letters and special characters) to ensure accurate results. Note that this utility requires an active internet connection to access the Alt Linux repository API.
 
-# Installation Guide for cli_utilite
+# Installation Guide for altbrains
 
-This guide will walk you through the installation process for the `cli_utilite` utility. Before proceeding, please make sure you have the following dependencies installed on your system:
+This guide will walk you through the installation process for the `altbrains` utility. Before proceeding, please make sure you have the following dependencies installed on your system:
 
 1. **Python**: Ensure that Python 3.6 or higher is installed on your system. If you don't have Python installed, you can download it from the official website: [Python Downloads](https://www.python.org/downloads/).
 
 2. **Poetry**: Install `poetry` by following the instructions on the official website: [Poetry Installation](https://python-poetry.org/docs/#installation).
 
-Once you have Python and Poetry installed, you can proceed with the installation of `cli_utilite` using the `make` command.
+Once you have Python and Poetry installed, you can proceed with the installation of `altbrains` using the `make` command.
 
 ## Step 1: Clone the Repository
 
-Begin by cloning the `cli_utilite` repository to your local machine:
+Begin by cloning the `altbrains` repository to your local machine:
 
 ```bash
 git clone git@github.com:quillahava/cli_utilite.git
@@ -36,7 +37,7 @@ cd cli_utilite
 
 ## Step 3: Create Virtual Environment and Install Dependencies
 
-Run the following `make` command to create a virtual environment and install the necessary dependencies for `cli_utilite`:
+Run the following `make` command to create a virtual environment and install the necessary dependencies for `altbrains`:
 
 ```bash
 make shell
@@ -52,15 +53,15 @@ source venv/bin/activate   # On Windows, use 'venv\Scripts\activate'
 pip install -r requirements.txt
 ```
 
-## Step 4: Install `cli_utilite`
+## Step 4: Install `altbrains`
 
-Next, run the following `make` command to install `cli_utilite` into the virtual environment:
+Next, run the following `make` command to install `altbrains` into the virtual environment:
 
 ```bash
 make install
 ```
 
-Alternatively, if you manually created a virtual environment, you can install `cli_utilite` using `python`:
+Alternatively, if you manually created a virtual environment, you can install `altbrains` using `python`:
 
 ```bash
 python setup.py build
@@ -69,20 +70,20 @@ python setup.py install
 
 ## Step 5: Verify Installation
 
-To confirm that the installation was successful, you can use the following command to get help and see the available options for `cli_utilite`:
+To confirm that the installation was successful, you can use the following command to get help and see the available options for `altbrains`:
 
 ```bash
-cli_utilite -h
+altbrains -h
 ```
 
 If the installation was successful, you will see the utility's help information.
 
 ## Step 6: Usage
 
-Run the `cli_utilite` with the desired branch names:
+Run the `altbrains` with the desired branch names:
 
 ```bash
-cli_utilite sisyphus p10
+altbrains sisyphus p10
 ```
 
 This command will compare the lists of binary packages between the `sisyphus` and `p10` branches, and it will generate the `response.json` file in the current directory.
@@ -106,20 +107,20 @@ After running the command, the `response.json` file will be created with the fol
 - `packages_in_branch2_not_in_branch1`: Lists the packages present in the second branch (`p10`).
 - `packages_with_higher_version_in_branch1`: Contains packages that have higher version-release in the first branch (`sisyphus`) compared to the second branch (`p10`).
 
-## Uninstalling `cli_utilite`
+## Uninstalling `altbrains`
 
-If, for any reason, you want to uninstall `cli_utilite` from the virtual environment, you can use the following `make` command:
+If, for any reason, you want to uninstall `altbrains` from the virtual environment, you can use the following `make` command:
 
 ```bash
 make uninstall
 ```
 
-Alternatively, if you manually created a virtual environment, you can uninstall `cli_utilite` using `pip`:
+Alternatively, if you manually created a virtual environment, you can uninstall `altbrains` using `pip`:
 
 ```bash
-pip uninstall cli_utilite
+pip uninstall altbrains
 ```
 
-That's it! You have successfully installed and verified `cli_utilite`. You can now use the utility to perform the desired tasks. If you encounter any issues during the installation or usage, feel free to reach out for support.
+That's it! You have successfully installed and verified `altbrains`. You can now use the utility to perform the desired tasks. If you encounter any issues during the installation or usage, feel free to reach out for support.
 
-Happy using `cli_utilite`! 🚀
+Happy using `altbrains`! 🚀

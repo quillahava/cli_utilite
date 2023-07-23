@@ -3,9 +3,6 @@
 import argparse
 import json
 from get_extra_lib import (
-    get_json_from_api,
-    get_package_diff,
-    compare_version,
     generate_comparison_json,
 )
 
