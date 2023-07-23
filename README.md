@@ -1,6 +1,7 @@
 # Get info about binary packages from an Alt Linux repository
 
 CLI utility for comparing lists of binary packages. This utility allows you to compare two branches of binary packages from an Alt Linux repository. It retrieves package lists from the specified branches, performs a comparison, and generates a JSON report containing three sections:
+
 1. 'packages_in_branch1': A list of package names that exist in the first branch but not in the second branch.
 2. 'packages_in_branch2': A list of package names that exist in the second branch but not in the first branch.
 3. 'packages_with_higher_version_in_branch1': A dictionary of package names and their respective versions from the first branch that have higher versions than those in the second branch.
@@ -92,8 +93,8 @@ After running the command, the `response.json` file will be created with the fol
 
 ```json
 {
-  "packages_in_branch1": ["package1", "package2", "package4"],
-  "packages_in_branch2": ["package3", "package5", "package6"],
+  "packages_in_branch1_not_in_branch2": ["package1", "package2", "package4"],
+  "packages_in_branch2_not_in_branch1": ["package3", "package5", "package6"],
   "packages_with_higher_version_in_branch1": {
     "package1": "1.2.0",
     "package2": "2.0.1"
@@ -101,8 +102,8 @@ After running the command, the `response.json` file will be created with the fol
 }
 ```
 
-- `packages_in_branch1`: Lists the packages present in the first branch (`sisyphus`).
-- `packages_in_branch2`: Lists the packages present in the second branch (`p10`).
+- `packages_in_branch1_not_in_branch2`: Lists the packages present in the first branch (`sisyphus`).
+- `packages_in_branch2_not_in_branch1`: Lists the packages present in the second branch (`p10`).
 - `packages_with_higher_version_in_branch1`: Contains packages that have higher version-release in the first branch (`sisyphus`) compared to the second branch (`p10`).
 
 ## Uninstalling `cli_utilite`
@@ -122,4 +123,3 @@ pip uninstall cli_utilite
 That's it! You have successfully installed and verified `cli_utilite`. You can now use the utility to perform the desired tasks. If you encounter any issues during the installation or usage, feel free to reach out for support.
 
 Happy using `cli_utilite`! 🚀
-Sure! Below is an example of how to use the `cli_utilite` to compare lists of binary packages from two branches and generate the `response.json` file.

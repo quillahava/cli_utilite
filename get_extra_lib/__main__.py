@@ -2,6 +2,7 @@ import requests
 import json
 import re
 from packaging import version
+from .models import JsonResponse
 
 
 # Makes a request to the API and returns a json response
@@ -14,7 +15,7 @@ def get_json_from_api(branch, arch=None, filename: str | None = None):
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
-        json_response = response.json()
+        json_response = JsonResponse(**response.json())
         # save response to file
         if filename:
             with open(filename, "w") as file:
@@ -36,9 +37,9 @@ def read_json_from_file(filename: str):
 
 
 # Returns a list of packages that are in the first branch and not in the second
-def get_package_diff(response1, response2):
-    packages_first_response = [package["name"] for package in response1["packages"]]
-    packages_second_response = [package["name"] for package in response2["packages"]]
+def get_package_diff(response1: JsonResponse, response2: JsonResponse):
+    packages_first_response = [package.name for package in response1.packages]
+    packages_second_response = [package.name for package in response2.packages]
     packages_diff = list(set(packages_first_response) - set(packages_second_response))
     return packages_diff
 
@@ -59,24 +60,24 @@ def remove_letters_from_version(version):
 
 
 # Compares package versions in two branches
-def compare_version(response1, response2):
+def compare_version(response1: JsonResponse, response2: JsonResponse):
     packages_diff = {}
-    packages1 = response1["packages"]
-    packages2 = response2["packages"]
+    packages1 = response1.packages
+    packages2 = response2.packages
 
     version_release_dict1 = {}
     for package in packages1:
-        version_str = package["version"]
+        version_str = package.version
         processed_version = remove_letters_from_version(version_str)
         if processed_version:
-            version_release_dict1[package["name"]] = {
+            version_release_dict1[package.name] = {
                 "processed_version": version.Version(processed_version),
                 "original_version": version_str,
             }
 
     for package in packages2:
-        package_name = package["name"]
-        version_str = package["version"]
+        package_name = package.name
+        version_str = package.version
         processed_version = remove_letters_from_version(version_str)
 
         if processed_version:
@@ -95,9 +96,9 @@ def compare_version(response1, response2):
 
 
 # Generates a response in json format
-def generate_comparison_json(branch1, branch2, arch=None):
-    response1 = get_json_from_api(branch1, arch)
-    response2 = get_json_from_api(branch2, arch)
+def generate_comparison_json(branch1: str, branch2: str, arch: str | None = None):
+    response1: JsonResponse | None = get_json_from_api(branch1, arch)
+    response2: JsonResponse | None = get_json_from_api(branch2, arch)
 
     if not response1 or not response2:
         return None
