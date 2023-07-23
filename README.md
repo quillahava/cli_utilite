@@ -1,13 +1,12 @@
 # Altbrains
 
-Altbrains stands for "Alt Linux Branches Inspector," a command-line utility and shared library that allows you to compare lists of binary packages from different branches of the Alt Linux distribution repository.
-CLI utility for comparing lists of binary packages. This utility allows you to compare two branches of binary packages from an Alt Linux repository. It retrieves package lists from the specified branches, performs a comparison, and generates a JSON report containing three sections:
+Altbrains stands for "Alt Linux Branches Inspector," a command-line utility and shared library that allows you to compare lists of binary packages from different branches of the Alt Linux distribution repository. . It retrieves package lists from the specified branches, performs a comparison, and generates a JSON report containing three sections:
 
-1. 'packages_in_branch1': A list of package names that exist in the first branch but not in the second branch.
-2. 'packages_in_branch2': A list of package names that exist in the second branch but not in the first branch.
-3. 'packages_with_higher_version_in_branch1': A dictionary of package names and their respective versions from the first branch that have higher versions than those in the second branch.
+1. 'packages_only_in_source_branch': A list of packages that exist in the first branch but not in the second branch.
+2. 'packages_only_in_target_branch': A list of packages that exist in the second branch but not in the first branch.
+3. 'packages_with_higher_version_in_source_branch': A dictionary of packages and their respective versions from the first branch that have higher versions than those in the second branch.
 
-The generated 'response.json' file will be placed in the current working directory. The comparison is based on the package names and their version numbers (after removing letters and special characters) to ensure accurate results. Note that this utility requires an active internet connection to access the Alt Linux repository API.
+The generated 'response.json' file will be placed in the current working directory. The comparison is based on the package names and their version numbers (after removing letters and special characters). Note that this utility requires an active internet connection to access the Alt Linux repository API.
 
 # Installation Guide for altbrains
 
@@ -34,6 +33,8 @@ Change your working directory to the root of the cloned repository:
 ```bash
 cd cli_utilite
 ```
+
+**Note:** `altbrains` can be run directly with the command `python altbrains` from root directory of project.
 
 ## Step 3: Create Virtual Environment and Install Dependencies
 
@@ -91,21 +92,46 @@ This command will compare the lists of binary packages between the `sisyphus` an
 ## Sample Output
 
 After running the command, the `response.json` file will be created with the following structure:
+**Warning:** The utility's execution may take several minutes. To reduce waiting time, use the `--arch` flag with the package architecture, e.g., `--arch x86_64`.
 
 ```json
 {
-  "packages_in_branch1_not_in_branch2": ["package1", "package2", "package4"],
-  "packages_in_branch2_not_in_branch1": ["package3", "package5", "package6"],
-  "packages_with_higher_version_in_branch1": {
-    "package1": "1.2.0",
-    "package2": "2.0.1"
+  "source_branch": "sisyphus",
+  "target_branch": "p10",
+  "source_packages_count": 1000,
+  "target_packages_count": 900,
+  "packages_only_in_source_branch": {
+    "count": 1,
+    "packages": [
+      {
+        "name": "package1",
+        "version": "1.0.0",
+        "release": "1"
+      }
+    ]
+  },
+  "packages_only_in_target_branch": {
+    "count": 1,
+    "packages": [
+      {
+        "name": "package2",
+        "version": "2.0.1",
+        "release": "2"
+      }
+    ]
+  },
+  "packages_with_higher_version_in_source_branch": {
+    "count": 1,
+    "packages": [
+      {
+        "name": "package3",
+        "version": "2.5.0",
+        "release": "3"
+      }
+    ]
   }
 }
 ```
-
-- `packages_in_branch1_not_in_branch2`: Lists the packages present in the first branch (`sisyphus`).
-- `packages_in_branch2_not_in_branch1`: Lists the packages present in the second branch (`p10`).
-- `packages_with_higher_version_in_branch1`: Contains packages that have higher version-release in the first branch (`sisyphus`) compared to the second branch (`p10`).
 
 ## Uninstalling `altbrains`
 
@@ -120,7 +146,5 @@ Alternatively, if you manually created a virtual environment, you can uninstall 
 ```bash
 pip uninstall altbrains
 ```
-
-That's it! You have successfully installed and verified `altbrains`. You can now use the utility to perform the desired tasks. If you encounter any issues during the installation or usage, feel free to reach out for support.
 
 Happy using `altbrains`! 🚀
