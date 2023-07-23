@@ -4,10 +4,12 @@ from .__main__ import (
     compare_version,
     generate_comparison_json,
 )
+from .models import PackageEncoder
 
 __all__ = [
     "compare_version",
     "get_json_from_api",
     "get_package_diff",
     "generate_comparison_json",
+    "PackageEncoder",
 ]

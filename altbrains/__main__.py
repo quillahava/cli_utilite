@@ -5,6 +5,7 @@ import json
 from get_extra_lib import (
     generate_comparison_json,
 )
+from get_extra_lib import PackageEncoder
 
 
 def main():
@@ -24,7 +25,7 @@ def main():
         if comparison_json:
             # Writing the JSON response to the response.json file
             with open("response.json", "w") as file:
-                json.dump(comparison_json, file, indent=4)
+                json.dump(comparison_json, file, indent=4, cls=PackageEncoder)
         else:
             print("Couldn't get data for comparison.")
     except Exception as e:
