@@ -3,6 +3,7 @@ import json
 import re
 from packaging import version
 from .models import JsonResponse
+from typing import List, Dict, Union
 
 
 # Makes a request to the API and returns a json response
@@ -96,21 +97,53 @@ def compare_version(response1: JsonResponse, response2: JsonResponse):
 
 
 # Generates a response in json format
-def generate_comparison_json(branch1: str, branch2: str, arch: str | None = None):
-    response1: JsonResponse | None = get_json_from_api(branch1, arch)
-    response2: JsonResponse | None = get_json_from_api(branch2, arch)
+# def generate_comparison_json(branch1: str, branch2: str, arch: str | None = None):
+#     response1: JsonResponse | None = get_json_from_api(branch1, arch)
+#     response2: JsonResponse | None = get_json_from_api(branch2, arch)
+#
+#     if not response1 or not response2:
+#         return None
+#
+#     packages_in_branch1_not_in_branch2 = get_package_diff(response1, response2)
+#     packages_in_branch2_not_in_branch1 = get_package_diff(response2, response1)
+#     version_diff = compare_version(response1, response2)
+#
+#     comparison_json = {
+#         "packages_in_branch1_not_in_branch2": list(packages_in_branch1_not_in_branch2),
+#         "packages_in_branch2_not_in_branch1": list(packages_in_branch2_not_in_branch1),
+#         "packages_with_higher_version_in_branch1": {
+#             package: str(version_diff[package]) for package in version_diff
+#         },
+#     }
+#
+#     return comparison_json
+
+
+def generate_comparison_json(
+    source_branch: str,
+    target_branch: str,
+    arch: str | None = None,
+    arguments: Dict[str, str] | None = None,
+) -> Dict[str, Union[List[str], Dict[str, str]]] | None:
+    response1: JsonResponse | None = get_json_from_api(source_branch, arch)
+    response2: JsonResponse | None = get_json_from_api(target_branch, arch)
 
     if not response1 or not response2:
         return None
 
-    packages_in_branch1_not_in_branch2 = get_package_diff(response1, response2)
-    packages_in_branch2_not_in_branch1 = get_package_diff(response2, response1)
+    packages_only_in_source_branch = get_package_diff(response1, response2)
+    packages_only_in_target_branch = get_package_diff(response2, response1)
     version_diff = compare_version(response1, response2)
 
     comparison_json = {
-        "packages_in_branch1_not_in_branch2": list(packages_in_branch1_not_in_branch2),
-        "packages_in_branch2_not_in_branch1": list(packages_in_branch2_not_in_branch1),
-        "packages_with_higher_version_in_branch1": {
+        "source_branch": source_branch,
+        "target_branch": target_branch,
+        "arguments": arguments,
+        "total_packages_count": len(response1.packages) + len(response2.packages),
+        "architectures": [arch] if arch else [],
+        "packages_only_in_source_branch": list(packages_only_in_source_branch),
+        "packages_only_in_target_branch": list(packages_only_in_target_branch),
+        "packages_with_higher_version_in_source_branch": {
             package: str(version_diff[package]) for package in version_diff
         },
     }
