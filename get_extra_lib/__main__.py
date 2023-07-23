@@ -64,24 +64,32 @@ def compare_version(response1, response2):
     packages1 = response1["packages"]
     packages2 = response2["packages"]
 
-    version_release_dict1 = {
-        package["name"]: version.Version(
-            remove_letters_from_version(package["version"])
-        )
-        for package in packages1
-    }
+    version_release_dict1 = {}
+    for package in packages1:
+        version_str = package["version"]
+        processed_version = remove_letters_from_version(version_str)
+        if processed_version:
+            version_release_dict1[package["name"]] = {
+                "processed_version": version.Version(processed_version),
+                "original_version": version_str,
+            }
 
     for package in packages2:
         package_name = package["name"]
-        version_release = version.Version(
-            remove_letters_from_version(package["version"])
-        )
+        version_str = package["version"]
+        processed_version = remove_letters_from_version(version_str)
 
-        if (
-            package_name in version_release_dict1
-            and version_release_dict1[package_name] < version_release
-        ):
-            packages_diff[package_name] = version_release_dict1[package_name]
+        if processed_version:
+            version_release = version.Version(processed_version)
+
+            if (
+                package_name in version_release_dict1
+                and version_release_dict1[package_name]["processed_version"]
+                < version_release
+            ):
+                packages_diff[package_name] = version_release_dict1[package_name][
+                    "original_version"
+                ]
 
     return packages_diff
 
