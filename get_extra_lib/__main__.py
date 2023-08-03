@@ -91,9 +91,9 @@ def compare_parsed_versions(str_version_1, str_version_2):
 
     # Дополняем версии нулями до одинаковой длины
     if len1 < len2:
-        version1 += [0] * (len2 - len1)
+        parsed_version_1 += [0] * (len2 - len1)
     elif len2 < len1:
-        version2 += [0] * (len1 - len2)
+        parsed_version_2 += [0] * (len1 - len2)
     for component1, component2 in zip(parsed_version_1, parsed_version_2):
         if isinstance(component1, int) and isinstance(component2, int):
             if component1 < component2:
@@ -111,47 +111,32 @@ def compare_parsed_versions(str_version_1, str_version_2):
                 elif component1 > component2:
                     return str_version_1
 
-    return version1  # If we reach this point, the versions are equal
+    return str_version_1  # If we reach this point, the versions are equal
+
+
+def compare_parsed_versions_bool(str_version_1, str_version_2):
+    return compare_parsed_versions(str_version_1, str_version_2) == str_version_1
 
 
 # Compares package versions in two branches
-def compare_version(response1: JsonResponse, response2: JsonResponse):
-    packages_diff = []
-    packages1 = response1.packages
-    packages2 = response2.packages
+# Функция для сравнения версий пакетов в разных списках
+def compare_packages_versions(packages1, packages2):
+    version_dict = {}
 
-    version_release_dict1 = {}
-    for package in packages1:
-        version_str = package.version
-        processed_version = remove_letters_from_version(version_str)
-        if processed_version:
-            version_release_dict1[package.name] = {
-                "processed_version": version.Version(processed_version),
-                "original_version": version_str,
-            }
+    # Заполняем словарь информацией о версиях пакетов из первого списка
+    for pkg in packages2:
+        key = pkg.name
+        version_dict[key] = pkg.version
 
-    for package in packages2:
-        package_name = package.name
-        version_str = package.version
-        processed_version = remove_letters_from_version(version_str)
+    # Сравниваем версии пакетов из второго списка и добавляем в результат только те, которые выше
+    result = []
+    for pkg in packages1:
+        key = pkg.name
+        if key in version_dict:
+            if compare_parsed_versions_bool(pkg.version, version_dict[key]):
+                result.append(pkg)
 
-        if processed_version:
-            version_release = version.Version(processed_version)
-
-            if (
-                package_name in version_release_dict1
-                and version_release_dict1[package_name]["processed_version"]
-                < version_release
-            ):
-                original_version = version_release_dict1[package_name][
-                    "original_version"
-                ]
-                package_to_response = Package(
-                    name=package_name, version=original_version, release=package.release
-                )
-                packages_diff.append(package_to_response)
-
-    return packages_diff
+    return result
 
 
 # Generates a response in json format
@@ -169,7 +154,9 @@ def generate_comparison_json(
 
     packages_diff_source = get_package_diff(response1, response2)
     packages_diff_target = get_package_diff(response2, response1)
-    packages_with_higher_version = compare_version(response1, response2)
+    packages_with_higher_version = compare_packages_versions(
+        response1.packages, response2.packages
+    )
 
     comparison_json = {
         "source_branch": source_branch,
@@ -197,15 +184,33 @@ if __name__ == "__main__":
     branch_name = "p10"
     second_branch_name = "p9"
     arch_name = "x86_64"
-    version1 = "1.3.3.0.81.37d1"
-    version2 = "1.3.3.0.80.37e1"
-    print(f"version 1: {version1}")
-    print(f"version 2: {version2}")
-    print(f"highest version: {compare_parsed_versions(version1, version2)}")
-    print(f"highest version: {compare_parsed_versions(version1, version2)}")
-    # with open("response.json", "w") as file:
+    # version1 = "1.3.3.0.81.37d1"
+    # version2 = "1.3.3.0.80.37e1"
+    # print(f"version 1: {version1}")
+    # print(f"version 2: {version2}")
+    # print(f"highest version: {compare_parsed_versions(version1, version2)}")
+    # print(f"highest version: {compare_parsed_versions(version1, version2)}")
+    with open("response.json", "w") as file:
+        json.dump(
+            generate_comparison_json(branch_name, second_branch_name, arch=arch_name),
+            file,
+            indent=4,
+            cls=PackageEncoder,
+        )
+    print(generate_comparison_json(branch_name, second_branch_name, arch_name))
+    # with open("response_2.json", "w") as file:
     #     json.dump(
-    #         generate_comparison_json(branch_name, second_branch_name, arch=arch_name),
+    #         compare_version(
+    #             get_json_from_api(branch=branch_name, arch=arch_name),
+    #             get_json_from_api(branch=second_branch_name, arch=arch_name),
+    #         ),
     #         file,
     #         indent=4,
+    #         cls=PackageEncoder,
     #     )
+    # print(
+    #     compare_version(
+    #         get_json_from_api(branch=branch_name, arch=arch_name),
+    #         get_json_from_api(branch=second_branch_name, arch=arch_name),
+    #     )
+    # )
