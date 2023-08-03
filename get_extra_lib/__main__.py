@@ -1,9 +1,8 @@
 import requests
 import json
 import re
-from packaging import version
 from models import JsonResponse, Package, PackageEncoder
-from typing import List, Dict, Union
+from typing import List
 
 
 # Makes a request to the API and returns a json response
@@ -58,18 +57,6 @@ def get_package_diff(
 
 
 # Returns the string 'version' to the comparative form
-# def remove_letters_from_version(version):
-#     # Используем регулярное выражение для удаления букв и знаков из начала и конца строки
-#     version = re.sub(r"^[a-zA-Z.]+", "", version)
-#     version = re.sub(r"[a-zA-Z.]+$", "", version)
-#     # Используем регулярное выражение для удаления некорректных символов между числами
-#     version = re.sub(r"[^\d.]+", "", version)
-#     # Заменяем рядом стоящие точки на одну точку
-#     version = re.sub(r"\.\.+", ".", version)
-#     # Заменяем все буквы на пустую строку, оставляя только цифры и точки
-#     result = "".join(char for char in version if char.isdigit() or char == ".")
-#
-#     return result
 def parse_version(version_str):
     pattern = r"(\d+|[a-zA-Z]+)"
     version_components = re.findall(pattern, version_str)
@@ -84,12 +71,13 @@ def parse_version(version_str):
     return parsed_version
 
 
+# Comparing 'version' strings
 def compare_parsed_versions(str_version_1, str_version_2):
     parsed_version_1 = parse_version(str_version_1)
     parsed_version_2 = parse_version(str_version_2)
     len1, len2 = len(parsed_version_1), len(parsed_version_2)
 
-    # Дополняем версии нулями до одинаковой длины
+    # Padding the versions with zeros up to the same length
     if len1 < len2:
         parsed_version_1 += [0] * (len2 - len1)
     elif len2 < len1:
@@ -114,21 +102,21 @@ def compare_parsed_versions(str_version_1, str_version_2):
     return str_version_1  # If we reach this point, the versions are equal
 
 
+# Bool version of comparing packages
 def compare_parsed_versions_bool(str_version_1, str_version_2):
     return compare_parsed_versions(str_version_1, str_version_2) == str_version_1
 
 
 # Compares package versions in two branches
-# Функция для сравнения версий пакетов в разных списках
 def compare_packages_versions(packages1, packages2):
     version_dict = {}
 
-    # Заполняем словарь информацией о версиях пакетов из первого списка
+    # Filling in the dictionary with information about package versions from the first list
     for pkg in packages2:
         key = pkg.name
         version_dict[key] = pkg.version
 
-    # Сравниваем версии пакетов из второго списка и добавляем в результат только те, которые выше
+    # Compare the versions of packages from the second list and add only those that are higher to the result
     result = []
     for pkg in packages1:
         key = pkg.name
@@ -184,12 +172,6 @@ if __name__ == "__main__":
     branch_name = "p10"
     second_branch_name = "p9"
     arch_name = "x86_64"
-    # version1 = "1.3.3.0.81.37d1"
-    # version2 = "1.3.3.0.80.37e1"
-    # print(f"version 1: {version1}")
-    # print(f"version 2: {version2}")
-    # print(f"highest version: {compare_parsed_versions(version1, version2)}")
-    # print(f"highest version: {compare_parsed_versions(version1, version2)}")
     with open("response.json", "w") as file:
         json.dump(
             generate_comparison_json(branch_name, second_branch_name, arch=arch_name),
@@ -197,20 +179,3 @@ if __name__ == "__main__":
             indent=4,
             cls=PackageEncoder,
         )
-    print(generate_comparison_json(branch_name, second_branch_name, arch_name))
-    # with open("response_2.json", "w") as file:
-    #     json.dump(
-    #         compare_version(
-    #             get_json_from_api(branch=branch_name, arch=arch_name),
-    #             get_json_from_api(branch=second_branch_name, arch=arch_name),
-    #         ),
-    #         file,
-    #         indent=4,
-    #         cls=PackageEncoder,
-    #     )
-    # print(
-    #     compare_version(
-    #         get_json_from_api(branch=branch_name, arch=arch_name),
-    #         get_json_from_api(branch=second_branch_name, arch=arch_name),
-    #     )
-    # )
