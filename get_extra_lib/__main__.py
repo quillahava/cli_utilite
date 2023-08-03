@@ -84,30 +84,32 @@ def parse_version(version_str):
     return parsed_version
 
 
-def compare_parsed_versions(version1, version2):
-    len1, len2 = len(version1), len(version2)
+def compare_parsed_versions(str_version_1, str_version_2):
+    parsed_version_1 = parse_version(str_version_1)
+    parsed_version_2 = parse_version(str_version_2)
+    len1, len2 = len(parsed_version_1), len(parsed_version_2)
 
     # Дополняем версии нулями до одинаковой длины
     if len1 < len2:
         version1 += [0] * (len2 - len1)
     elif len2 < len1:
         version2 += [0] * (len1 - len2)
-    for component1, component2 in zip(version1, version2):
+    for component1, component2 in zip(parsed_version_1, parsed_version_2):
         if isinstance(component1, int) and isinstance(component2, int):
             if component1 < component2:
-                return version2
+                return str_version_2
             elif component1 > component2:
-                return version1
+                return str_version_1
         else:
             if isinstance(component1, int):
-                return version1
+                return str_version_1
             elif isinstance(component2, int):
-                return version2
+                return str_version_2
             else:
                 if component1 < component2:
-                    return version2
+                    return str_version_2
                 elif component1 > component2:
-                    return version1
+                    return str_version_1
 
     return version1  # If we reach this point, the versions are equal
 
@@ -195,12 +197,12 @@ if __name__ == "__main__":
     branch_name = "p10"
     second_branch_name = "p9"
     arch_name = "x86_64"
-    version1 = parse_version("1.3.3")
-    version2 = parse_version("1.3.3.0.81.37d1")
-    version3 = parse_version("1.3.3.0.80.37e1")
-    print(version1)
-    print(version2)
-    print(compare_parsed_versions(version2, version3))
+    version1 = "1.3.3.0.81.37d1"
+    version2 = "1.3.3.0.80.37e1"
+    print(f"version 1: {version1}")
+    print(f"version 2: {version2}")
+    print(f"highest version: {compare_parsed_versions(version1, version2)}")
+    print(f"highest version: {compare_parsed_versions(version1, version2)}")
     # with open("response.json", "w") as file:
     #     json.dump(
     #         generate_comparison_json(branch_name, second_branch_name, arch=arch_name),
