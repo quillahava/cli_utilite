@@ -2,7 +2,7 @@ import requests
 import json
 import re
 from packaging import version
-from .models import JsonResponse, Package, PackageEncoder
+from models import JsonResponse, Package, PackageEncoder
 from typing import List, Dict, Union
 
 
@@ -58,18 +58,58 @@ def get_package_diff(
 
 
 # Returns the string 'version' to the comparative form
-def remove_letters_from_version(version):
-    # Используем регулярное выражение для удаления букв и знаков из начала и конца строки
-    version = re.sub(r"^[a-zA-Z.]+", "", version)
-    version = re.sub(r"[a-zA-Z.]+$", "", version)
-    # Используем регулярное выражение для удаления некорректных символов между числами
-    version = re.sub(r"[^\d.]+", "", version)
-    # Заменяем рядом стоящие точки на одну точку
-    version = re.sub(r"\.\.+", ".", version)
-    # Заменяем все буквы на пустую строку, оставляя только цифры и точки
-    result = "".join(char for char in version if char.isdigit() or char == ".")
+# def remove_letters_from_version(version):
+#     # Используем регулярное выражение для удаления букв и знаков из начала и конца строки
+#     version = re.sub(r"^[a-zA-Z.]+", "", version)
+#     version = re.sub(r"[a-zA-Z.]+$", "", version)
+#     # Используем регулярное выражение для удаления некорректных символов между числами
+#     version = re.sub(r"[^\d.]+", "", version)
+#     # Заменяем рядом стоящие точки на одну точку
+#     version = re.sub(r"\.\.+", ".", version)
+#     # Заменяем все буквы на пустую строку, оставляя только цифры и точки
+#     result = "".join(char for char in version if char.isdigit() or char == ".")
+#
+#     return result
+def parse_version(version_str):
+    pattern = r"(\d+|[a-zA-Z]+)"
+    version_components = re.findall(pattern, version_str)
+    parsed_version = []
 
-    return result
+    for component in version_components:
+        if component.isdigit():
+            parsed_version.append(int(component))
+        else:
+            parsed_version.append(component)
+
+    return parsed_version
+
+
+def compare_parsed_versions(version1, version2):
+    len1, len2 = len(version1), len(version2)
+
+    # Дополняем версии нулями до одинаковой длины
+    if len1 < len2:
+        version1 += [0] * (len2 - len1)
+    elif len2 < len1:
+        version2 += [0] * (len1 - len2)
+    for component1, component2 in zip(version1, version2):
+        if isinstance(component1, int) and isinstance(component2, int):
+            if component1 < component2:
+                return version2
+            elif component1 > component2:
+                return version1
+        else:
+            if isinstance(component1, int):
+                return version1
+            elif isinstance(component2, int):
+                return version2
+            else:
+                if component1 < component2:
+                    return version2
+                elif component1 > component2:
+                    return version1
+
+    return version1  # If we reach this point, the versions are equal
 
 
 # Compares package versions in two branches
@@ -155,9 +195,15 @@ if __name__ == "__main__":
     branch_name = "p10"
     second_branch_name = "p9"
     arch_name = "x86_64"
-    with open("response.json", "w") as file:
-        json.dump(
-            generate_comparison_json(branch_name, second_branch_name, arch=arch_name),
-            file,
-            indent=4,
-        )
+    version1 = parse_version("1.3.3")
+    version2 = parse_version("1.3.3.0.81.37d1")
+    version3 = parse_version("1.3.3.0.80.37e1")
+    print(version1)
+    print(version2)
+    print(compare_parsed_versions(version2, version3))
+    # with open("response.json", "w") as file:
+    #     json.dump(
+    #         generate_comparison_json(branch_name, second_branch_name, arch=arch_name),
+    #         file,
+    #         indent=4,
+    #     )
