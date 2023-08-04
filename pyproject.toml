@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "cli_pr"
+name = "altbrains"
 version = "0.1.0"
 description = ""
 authors = ["quillahava <voyt.to.work@ya.ru>"]
@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "get_extra_lib"}]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.9.16"
 argparse = "^1.4.0"
 requests = "^2.31.0"
 packaging = "^23.1"

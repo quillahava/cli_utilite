@@ -1,12 +1,12 @@
 import requests
 import json
 import re
-from models import JsonResponse, Package, PackageEncoder
-from typing import List
+from .models import JsonResponse, Package, PackageEncoder
+from typing import List, Union
 
 
 # Makes a request to the API and returns a json response
-def get_json_from_api(branch, arch=None, filename: str | None = None):
+def get_json_from_api(branch, arch=None, filename: Union[str, None] = None):
     url = f"https://rdb.altlinux.org/api/export/branch_binary_packages/{branch}"
     params = {}
     if arch is not None:
@@ -129,10 +129,10 @@ def compare_packages_versions(packages1, packages2):
 
 # Generates a response in json format
 def generate_comparison_json(
-    source_branch: str, target_branch: str, arch: str | None = None
+    source_branch: str, target_branch: str, arch: Union[str, None] = None
 ):
-    response1: JsonResponse | None = get_json_from_api(source_branch, arch)
-    response2: JsonResponse | None = get_json_from_api(target_branch, arch)
+    response1: Union[JsonResponse, None] = get_json_from_api(source_branch, arch)
+    response2: Union[JsonResponse, None] = get_json_from_api(target_branch, arch)
 
     if not response1 or not response2:
         return None

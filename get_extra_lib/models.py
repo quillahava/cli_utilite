@@ -1,17 +1,17 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Union
 import json
 
 
 class Package(BaseModel):
     name: str
-    epoch: int | None = None
+    epoch: Union[int, None] = None
     version: str
     release: str
-    arch: str | None = None
-    disttag: str | None = None
-    buildtime: int | None = None
-    source: str | None = None
+    arch: Union[str, None] = None
+    disttag: Union[str, None] = None
+    buildtime: Union[int, None] = None
+    source: Union[str, None] = None
 
 
 class PackageEncoder(json.JSONEncoder):
