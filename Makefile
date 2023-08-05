@@ -5,7 +5,7 @@ shell:
 
 # Install cli_utilite into virtual environment
 install: 
-	python setup.py install
+	python3 setup.py install
 
 
 # Uninstall the utility (remove it from the system)
