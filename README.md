@@ -106,13 +106,14 @@ After running the command, the `response.json` file will be created with the fol
   }
 }
 ```
+![Example of usage](./example_of_usage.png)
 
 ## Uninstalling `altbrains`
 
 If, you want to uninstall `altbrains`, you can use the following `make` command:
 
 ```bash
-make uninstall
+sudo make uninstall
 ```
 
 Now you have `altbrains` installed and ready to use. You can run it with desired branch names to compare lists of binary packages between different branches of the Alt Linux distribution repository.
