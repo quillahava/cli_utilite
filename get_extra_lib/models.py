@@ -17,8 +17,8 @@ class Package(BaseModel):
 class PackageEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Package):
-            return obj.model_dump()
-        return json.JSONEncoder.default(self, obj)
+            return obj.dict()
+        return super().default(obj)
 
 
 class JsonResponse(BaseModel):
