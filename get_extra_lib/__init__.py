@@ -3,6 +3,7 @@ from .__main__ import (
     get_package_diff,
     compare_packages_versions,
     generate_comparison_json,
+    write_to_file,
 )
 from .models import PackageEncoder
 
@@ -12,4 +13,5 @@ __all__ = [
     "get_package_diff",
     "generate_comparison_json",
     "PackageEncoder",
+    "write_to_file",
 ]

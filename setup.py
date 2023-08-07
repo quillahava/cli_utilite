@@ -10,7 +10,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "altbrains=altbrains.main:main",
+            "altbrains=altbrains.__main__:main",
         ],
     },
 )

@@ -168,6 +168,20 @@ def generate_comparison_json(
     return comparison_json
 
 
+def write_to_file(
+    first_branch: str, second_branch: str, filename: str, arch: Union[str, None] = None
+):
+    try:
+        comparison_json = generate_comparison_json(first_branch, second_branch, arch)
+        if comparison_json:
+            with open(f"{filename}.json", "w") as file:
+                json.dump(comparison_json, file, indent=4, cls=PackageEncoder)
+        else:
+            print("Coudn't get data for comparison.")
+    except Exception as e:
+        print(f"Error {e}")
+
+
 if __name__ == "__main__":
     branch_name = "p10"
     second_branch_name = "p9"
