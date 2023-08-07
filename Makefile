@@ -5,6 +5,7 @@ shell:
 
 # Install cli_utilite into virtual environment
 install: 
+	pip install -r requirements.txt
 	python3 setup.py install
 
 
