@@ -104,7 +104,10 @@ def compare_parsed_versions(str_version_1, str_version_2):
 
 # Bool version of comparing packages
 def compare_parsed_versions_bool(str_version_1, str_version_2):
-    return compare_parsed_versions(str_version_1, str_version_2) == str_version_1
+    return (
+        compare_parsed_versions(str_version_1, str_version_2) == str_version_1
+        and str_version_1 != str_version_2
+    )
 
 
 # Compares package versions in two branches
